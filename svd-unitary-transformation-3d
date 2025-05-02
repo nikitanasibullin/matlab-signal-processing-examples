@@ -1,0 +1,52 @@
+clear all, clc
+xlim([-3,3])
+ylim([-3,3])
+zlim([-3,3])
+view([45,26])
+subplot(1,2,1)
+t1=pi/15
+t2=-pi/9
+t3=-pi/20
+%rotation matrices
+Rx = [1 0 0; 0 cos(t1) -sin(t1); 0 sin(t1) cos(t1)];
+Ry = [cos(t2) 0 sin(t2); 0 1 0; -sin(t2) 0 cos(t2)];
+Rz = [cos(t3) -sin(t3) 0; sin(t3) cos(t3) 0; 0 0 1];
+
+Sigma = diag([3;1;0.5]);
+R = Rz*Ry*Rx*Sigma;
+[x,y,z] = sphere(150);
+h1=surf(x,y,z)
+hold on
+plot3([-2,2],[0,0],[0,0],'k','linewidth',4)
+plot3([0,0],[0,0],[-2,2],'k','linewidth',4)
+plot3([0,0],[-2,2],[0,0],'k','linewidth',4)
+shading interp
+subplot(1,2,2)
+xR = 0*x;
+yR = 0*y;
+zR = 0*z;
+ for i=1:size(x,1)
+   for j=1:size(x,2)
+     vecR = R*[x(i,j);
+     y(i,j); z(i,j)];
+     xR(i,j) = vecR(1);
+     yR(i,j) = vecR(2);
+     zR(i,j) = vecR(3);
+   endfor
+ endfor
+h2=surf(xR,yR,zR,z);
+shading interp
+hold on
+
+x_axis = [-2 2; 0 0; 0 0];
+y_axis = [0 0; -2 2; 0 0];
+z_axis = [0 0; 0 0; -2 2];
+
+x_axis_trans = R * x_axis;
+y_axis_trans = R * y_axis;
+z_axis_trans = R * z_axis;
+
+plot3(x_axis_trans(1,:), x_axis_trans(2,:), x_axis_trans(3,:), 'k', 'linewidth', 4)
+plot3(y_axis_trans(1,:), y_axis_trans(2,:), y_axis_trans(3,:), 'k', 'linewidth', 4)
+plot3(z_axis_trans(1,:), z_axis_trans(2,:), z_axis_trans(3,:), 'k', 'linewidth', 4)
+axis equal
